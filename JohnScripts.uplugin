@@ -1,0 +1,24 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0",
+	"FriendlyName": "JohnScripts",
+	"Description": "Scripts that John done made",
+	"Category": "Other",
+	"CreatedBy": "John Kinzel",
+	"CreatedByURL": "johnkinzel.com",
+	"DocsURL": "",
+	"MarketplaceURL": "",
+	"SupportURL": "",
+	"CanContainContent": true,
+	"IsBetaVersion": false,
+	"IsExperimentalVersion": false,
+	"Installed": false,
+	"Modules": [
+		{
+			"Name": "JohnScripts",
+			"Type": "Editor",
+			"LoadingPhase": "Default"
+		}
+	]
+}

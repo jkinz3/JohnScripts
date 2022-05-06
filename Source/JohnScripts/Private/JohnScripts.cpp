@@ -145,7 +145,7 @@ void FJohnScripts::SnapStaticMeshVerticesToGrid()
 
 					//all the geometry of static meshes are stored in MeshDescriptions (used to be an older class called RawMesh but that changed a few versions ago.
 
-					//crete an FDynamicMesh3
+					//create an FDynamicMesh3
 					TSharedPtr<UE::Geometry::FDynamicMesh3, ESPMode::ThreadSafe> DynamicMesh = MakeShared<UE::Geometry::FDynamicMesh3, ESPMode::ThreadSafe>();
 
 					/*

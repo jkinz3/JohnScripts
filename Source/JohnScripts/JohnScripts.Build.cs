@@ -40,7 +40,12 @@ public class JohnScripts : ModuleRules
 				"SlateCore",
                 "ToolMenus",
                 "UnrealEd",
-                "InteractiveToolsFramework"
+                "InteractiveToolsFramework",
+                "GeometryFramework",
+                "GeometryScriptingEditor",
+                "GeometryCore",
+                "MeshDescription",
+                "MeshConversion"
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);

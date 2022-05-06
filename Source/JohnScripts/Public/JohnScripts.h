@@ -1,23 +1,19 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
-
 #pragma once
-
 #include "CoreMinimal.h"
-#include "Modules/ModuleManager.h"
 
 DECLARE_LOG_CATEGORY_EXTERN(LogJohnScripts, Log, All);
 
-class FJohnScriptsModule : public IModuleInterface
+class FJohnScripts
 {
 public:
 
-	/** IModuleInterface implementation */
-	virtual void StartupModule() override;
-	virtual void ShutdownModule() override;
+	static void InstallHooks();
 
-	void OnFEngineLoopInitComplete();
+	static TSharedRef<FExtender> OnExtendLevelEditorActorContextMenu(const TSharedRef<FUICommandList> CommandList, const TArray<AActor*> SelectedActors);
 
-	void ExtendBuildMenu();
+	static void CreateJohnScriptsMenu(FMenuBuilder& MenuBuilder);
 
-	void GenerateLightMaps();
+	static void GenerateLightmapsForSelectedActors();
+
+	static void SnapStaticMeshVerticesToGrid();
 };

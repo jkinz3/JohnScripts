@@ -45,7 +45,12 @@ public class JohnScripts : ModuleRules
                 "GeometryScriptingEditor",
                 "GeometryCore",
                 "MeshDescription",
-                "MeshConversion"
+                "MeshConversion",
+                "ModelingOperatorsEditorOnly",
+                "MeshModelingToolsExp",
+                "MeshModelingToolsEditorOnlyExp",
+                "DynamicMesh",
+                "ContentBrowser"
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);

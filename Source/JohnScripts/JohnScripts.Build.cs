@@ -50,6 +50,7 @@ public class JohnScripts : ModuleRules
                 "MeshModelingToolsExp",
                 "MeshModelingToolsEditorOnlyExp",
                 "DynamicMesh",
+                "GeometryAlgorithms",
                 "ContentBrowser"
 				// ... add private dependencies that you statically link with here ...	
 			}

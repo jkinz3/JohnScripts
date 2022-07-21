@@ -21,6 +21,9 @@
 #include "IMeshReductionInterfaces.h"
 #include "ContentBrowserModule.h"
 #include "RenderingThread.h"
+#include "GroupTopology.h"
+#include "ConstrainedDelaunay2.h"
+#include "Operations/PolygroupRemesh.h"
 
 #define LOCTEXT_NAMESPACE "FJohnScripts"
 
@@ -370,36 +373,32 @@ void FJohnScripts::GenPolyGroupsAndOptimize()
 					Normals.RecomputeOverlayNormals(ResultMesh->Attributes()->PrimaryNormals());
 					Normals.CopyToOverlay(NormalOverlay, false);
 
-					UE::Geometry::FSimplifyMeshOp Op;
 
-					Op.bDiscardAttributes = true;
-					Op.bPreventNormalFlips = true;
-					Op.bPreserveSharpEdges = true;
-					Op.bReproject = false;
-					Op.SimplifierType = ESimplifyType::UEStandard;
-					Op.TargetMode = ESimplifyTargetType::Percentage;
-					Op.TargetPercentage = 50;
-					Op.MeshBoundaryConstraint = (UE::Geometry::EEdgeRefineFlags)EMeshBoundaryConstraint::Free;
-					Op.GroupBoundaryConstraint = (UE::Geometry::EEdgeRefineFlags)EGroupBoundaryConstraint::Free;
-					Op.MaterialBoundaryConstraint = (UE::Geometry::EEdgeRefineFlags)EMaterialBoundaryConstraint::Free;
-					Op.OriginalMeshDescription = MeshDescription;
-					Op.OriginalMesh = DynamicMesh;
-					Op.OriginalMeshSpatial = OriginalSpatial;
+					UE::Geometry::FPolygroupLayer InputGroupLayer{true, 0};
 
-					IMeshReductionManagerModule& MeshReductionModule = FModuleManager::Get().LoadModuleChecked<IMeshReductionManagerModule>("MeshReductionInterface");
-					Op.MeshReduction = MeshReductionModule.GetStaticMeshReductionInterface();
-					FProgressCancel Progress;
-					Op.CalculateResult(&Progress);
+					if (InputGroupLayer.CheckExists(ResultMesh.Get()) == false)
+					{
+						UE_LOG(LogJohnScripts, Warning, TEXT("Could not find polygroups"));
 
+					}
+					TUniquePtr<UE::Geometry::FGroupTopology> Topo = MakeUnique<UE::Geometry::FGroupTopology>(ResultMesh.Get(), true);
+
+					UE::Geometry::FPolygroupRemesh Simplifier(ResultMesh.Get(), Topo.Get(), UE::Geometry::ConstrainedDelaunayTriangulate<double>);
+					Simplifier.SimplificationAngleTolerance = .001f;
+					Simplifier.Compute();
+
+					//now convert it back to a mesh description and apply it to the static mesh
+					FMeshDescription* NewMeshDescription = StaticMesh->GetMeshDescription(0);
+
+					StaticMesh->ModifyMeshDescription(0);
+					
 					FDynamicMeshToMeshDescription DynamicMeshToMeshDescription;
-					ResultMesh = Op.ExtractResult();
-					DynamicMeshToMeshDescription.Convert(ResultMesh.Get(), *MeshDescription);
+					DynamicMeshToMeshDescription.Convert(ResultMesh.Get(), *NewMeshDescription, true);
 
-					UStaticMesh::FCommitMeshDescriptionParams Params;
-					Params.bMarkPackageDirty = false;
-					Params.bUseHashAsGuid = true;
 
-					StaticMesh->CommitMeshDescription(0, Params);
+					StaticMesh->CommitMeshDescription(0);
+
+					StaticMesh->PostEditChange();
 
 
 				}
